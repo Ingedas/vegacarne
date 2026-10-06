@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>VegaCarne — Análisis de consumo 2026</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15140f; --charcoal:#1c1b16; --charcoal2:#242219; --gold:#e7b92e; --gold-deep:#b3841c;
+    --paper:#faf8f2; --paper2:#f1ecdd; --muted:#6f6c60; --line:#e4dfce; --cream:#cfcabb;
+    --up:#a8321e; --dn:#4d7a3a;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --paper:#faf8f2; --ink:#15140f; --line:#e4dfce; --muted:#6f6c60; }
+  }
+  :root[data-theme="dark"]{ --paper:#faf8f2; }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; scroll-padding-top:env(safe-area-inset-top,0px); }
+  body{ margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Poppins', -apple-system, 'Segoe UI', Roboto, sans-serif; font-weight:300;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+    -webkit-font-smoothing:antialiased; }
+  img,svg{ max-width:100%; }
+  .wrap{ max-width:920px; margin:0 auto; padding:0 24px; }
+  @media (max-width:640px){ .wrap{ padding:0 18px; } }
+  section{ position:relative; }
+  .light{ background:var(--paper); color:var(--ink); }
+  .dark{ background:var(--charcoal); color:var(--cream); }
+  .pad{ padding:64px 0; }
+  @media (max-width:640px){ .pad{ padding:44px 0; } }
+  .kicker{ font-size:.72rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-deep); font-weight:600; }
+  .dark .kicker{ color:var(--gold); }
+  h1.section{ font-size:clamp(1.6rem,4vw,2.05rem); font-weight:600; line-height:1.18; margin:.5rem 0 0; }
+  h1.section .no{ color:var(--gold-deep); }
+  .dark h1.section .no{ color:var(--gold); }
+  h3{ font-size:1rem; font-weight:600; margin:34px 0 10px; }
+  p{ font-size:.98rem; line-height:1.68; color:#3a382f; font-weight:300; margin:0; }
+  .dark p{ color:var(--cream); }
+  .lede{ font-size:1.18rem; line-height:1.58; font-weight:300; color:var(--ink); max-width:640px; margin-top:22px; }
+  .dark .lede{ color:#f2efe5; }
+  a{ color:inherit; }
+  .backtop{ display:inline-block; margin-top:22px; font-size:.78rem; color:var(--gold-deep); text-decoration:none; letter-spacing:.04em; }
+  .dark .backtop{ color:var(--gold); }
+  .hl{ text-decoration:underline; text-decoration-color:var(--gold-deep); text-decoration-thickness:1.5px; text-underline-offset:3px; font-weight:500; }
+  .dark .hl{ text-decoration-color:var(--gold); }
+
+  /* HERO */
+  .hero{ background:var(--charcoal); min-height:min(92vh,760px); display:flex; align-items:stretch; overflow:hidden; }
+  .hero-inner{ position:relative; width:100%; display:flex; }
+  .hero-art{ position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+  .hero-band{ position:relative; z-index:1; margin-left:clamp(24px,12vw,140px); width:min(360px,72vw);
+    background:var(--gold); padding:44px 28px 34px; display:flex; flex-direction:column; min-height:min(80vh,640px); }
+  .hero-eyebrow{ font-size:.72rem; letter-spacing:.14em; color:var(--ink); font-weight:600; }
+  .hero h1{ font-size:clamp(2rem,6vw,2.7rem); font-weight:700; color:var(--ink); line-height:1.06; margin:26px 0 0; letter-spacing:-.01em; }
+  .hero .sub{ margin-top:20px; font-size:1.02rem; line-height:1.55; color:#2a2410; font-weight:500; }
+  .hero-meta{ margin-top:auto; padding-top:28px; border-top:1px solid rgba(21,20,15,.25); }
+  .hero-meta .d{ font-size:.85rem; color:#2a2410; font-weight:500; }
+  .hero-meta .b{ margin-top:6px; font-size:.72rem; color:#4a3f14; letter-spacing:.1em; line-height:1.6; }
+
+  /* TOC */
+  .toc-grid{ display:flex; gap:48px; flex-wrap:wrap; margin-top:34px; }
+  .toc-box{ flex:1 1 360px; }
+  ol.toc{ list-style:none; margin:0; padding:0; border-top:1px solid #37352a; }
+  ol.toc li a{ display:flex; align-items:baseline; gap:14px; padding:13px 2px; text-decoration:none; border-bottom:1px solid #37352a; font-size:.98rem; color:var(--cream); transition:opacity .15s; }
+  ol.toc li a:hover{ opacity:.7; }
+  ol.toc li b{ color:var(--gold); font-weight:600; font-size:.85rem; flex-shrink:0; }
+  .toc-stat{ flex:1 1 260px; padding-top:6px; }
+  .toc-stat .num{ font-size:clamp(2.6rem,7vw,3.4rem); font-weight:700; color:var(--gold); line-height:1; }
+  .toc-stat .unit{ font-size:.95rem; color:var(--cream); margin-top:10px; max-width:320px; line-height:1.5; }
+  .toc-stat .rule2{ width:40px; height:2px; background:var(--gold); margin:18px 0; }
+  .toc-stat .delta{ font-size:.8rem; color:#a09c8c; line-height:1.6; }
+
+  /* fichas */
+  .ficha{ display:flex; flex-wrap:wrap; gap:14px 30px; margin-top:34px; padding-top:22px; border-top:1px solid #37352a; }
+  .ficha div{ flex:1 1 200px; font-size:.86rem; color:#efece2; line-height:1.5; }
+  .ficha span{ display:block; font-size:.66rem; letter-spacing:.14em; text-transform:uppercase; color:#a09c8c; margin-bottom:3px; }
+
+  /* cards */
+  .cards{ display:flex; flex-wrap:wrap; gap:22px 28px; margin-top:36px; }
+  .card{ flex:1 1 160px; border-top:2px solid var(--gold); padding-top:14px; }
+  .card .n{ font-size:1.55rem; font-weight:700; }
+  .card .l{ font-size:.72rem; color:var(--muted); margin-top:6px; text-transform:uppercase; letter-spacing:.06em; }
+  .card .d{ font-size:.76rem; color:var(--gold-deep); margin-top:6px; font-weight:500; }
+  .bullets{ margin-top:30px; border-top:1px solid var(--line); }
+  .bullets .row{ display:flex; gap:14px; padding:13px 0; border-bottom:1px solid var(--line); }
+  .bullets .mk{ color:var(--gold-deep); font-weight:700; flex-shrink:0; }
+  .bullets .tx{ font-size:.94rem; line-height:1.55; color:#3a382f; }
+  .twocol{ display:flex; flex-wrap:wrap; gap:40px; margin-top:8px; align-items:flex-start; }
+  .twocol .col{ flex:1 1 300px; min-width:0; }
+  .legend{ font-size:.75rem; color:var(--muted); line-height:2; margin-top:14px; }
+  .legend span.sw{ display:inline-block; width:9px; height:9px; margin-right:6px; border-radius:1px; }
+  .legend .it{ margin-right:18px; white-space:nowrap; }
+  .chart-title{ font-size:.82rem; color:var(--muted); font-weight:500; margin:30px 0 6px; letter-spacing:.01em; }
+  .ax{ font:10px Poppins,sans-serif; fill:#8a8676; } .dl{ font:600 10px Poppins,sans-serif; } .lb{ font:500 10.5px Poppins,sans-serif; fill:#15140f; }
+
+  /* tablas */
+  .tbl{ overflow-x:auto; margin-top:22px; }
+  table{ width:100%; border-collapse:collapse; font-size:.84rem; min-width:560px; }
+  th{ text-align:right; font-weight:600; font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:10px 8px; border-bottom:2px solid var(--gold); }
+  td{ text-align:right; padding:9px 8px; border-bottom:1px solid var(--line); font-variant-numeric:tabular-nums; color:#3a382f; }
+  th:first-child, td:first-child{ text-align:left; }
+  tr.tot td{ font-weight:600; color:var(--ink); border-top:1px solid var(--ink); background:var(--paper2); }
+  .up{ color:var(--up); font-weight:500; } .dn{ color:var(--dn); font-weight:500; }
+  .note{ font-size:.74rem; color:var(--muted); line-height:1.6; margin-top:10px; }
+
+  /* callouts */
+  .callout{ margin-top:30px; padding:18px 20px; border-left:3px solid var(--gold-deep); background:var(--paper2); font-size:.95rem; line-height:1.6; color:#3a382f; }
+  .dark .headlines{ margin-top:26px; }
+  .headlines .h{ font-size:.92rem; color:#efece2; line-height:1.55; padding:10px 0 10px 16px; border-left:2px solid var(--gold); margin-bottom:10px; }
+
+  .bigstats{ margin-top:30px; border-top:1px solid #34321f; }
+  .bigstats .row{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 26px; padding:26px 0; border-bottom:1px solid #34321f; }
+  .bigstats .num{ font-size:1.9rem; font-weight:700; color:var(--gold); width:170px; flex-shrink:0; line-height:1; }
+  .bigstats .desc{ font-size:.92rem; color:var(--cream); line-height:1.55; max-width:460px; flex:1 1 220px; }
+
+  .watch-list{ margin-top:30px; border-top:1px solid var(--line); }
+  .watch-item{ display:flex; gap:18px; padding:18px 0; border-bottom:1px solid var(--line); }
+  .watch-no{ font-size:1.3rem; font-weight:700; color:var(--gold-deep); width:34px; flex-shrink:0; line-height:1.2; }
+  .watch-tx{ font-size:.92rem; line-height:1.6; color:#3a382f; }
+  .watch-tx b{ font-weight:600; color:var(--ink); display:block; margin-bottom:3px; font-size:.98rem; }
+
+  .sources{ font-size:.74rem; color:var(--muted); line-height:1.7; margin-top:44px; max-width:680px; }
+  .backband{ background:var(--charcoal); padding:46px 0; }
+  .backband .inner{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; }
+  .backband .bg{ font-size:1.3rem; font-weight:700; color:var(--gold); letter-spacing:.02em; }
+  .backband .bt{ font-size:.82rem; color:var(--cream); line-height:1.5; text-align:right; }
+  @media (max-width:640px){
+    .bigstats .num{ width:auto; }
+    .hero-band{ width:min(320px,78vw); padding:36px 22px 30px; }
+    .backband .bt{ text-align:left; }
+  }
+  @media print{ .backtop{ display:none; } .pad{ padding:40px 0; } section,header{ break-inside:avoid-page; } .hero{ min-height:0; height:260mm; } }
+  table.nw td,table.nw th{ white-space:nowrap; } table.nw td:first-child{ white-space:normal; }
+  @media print{
+    html,body{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .backtop{ display:none; }
+    .pad{ padding:44px 0; }
+    .hero{ height:auto; min-height:0; }
+    #resumen,#evolucion,#curva,#prevision,#recomendaciones{ break-before:page; }
+    table,.callout,.watch-item,.bigstats .row,svg{ break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <svg class="hero-art" viewBox="0 0 800 760" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="800" height="760" fill="#141310"/>
+      <g opacity="0.9">
+        <rect x="20" y="360" width="90" height="400" fill="#211f17"/><rect x="120" y="260" width="115" height="500" fill="#1a190f"/>
+        <rect x="250" y="420" width="80" height="340" fill="#242217"/><rect x="335" y="190" width="130" height="570" fill="#181712"/>
+        <rect x="475" y="340" width="98" height="420" fill="#201e15"/><rect x="585" y="390" width="75" height="370" fill="#1c1b13"/>
+        <rect x="670" y="300" width="105" height="460" fill="#1f1d14"/>
+      </g>
+      <g stroke="#3a361f" stroke-width="1">
+        <line x1="0" y1="260" x2="800" y2="560"/><line x1="0" y1="380" x2="800" y2="680"/>
+        <line x1="120" y1="760" x2="500" y2="160"/><line x1="320" y1="760" x2="700" y2="220"/>
+      </g>
+      <g fill="#e7b92e" opacity="0.7">
+        <rect x="44" y="400" width="6" height="8"/><rect x="60" y="440" width="6" height="8"/><rect x="150" y="310" width="6" height="8"/>
+        <rect x="176" y="360" width="6" height="8"/><rect x="368" y="240" width="6" height="8"/><rect x="400" y="300" width="6" height="8"/>
+        <rect x="430" y="380" width="6" height="8"/><rect x="505" y="410" width="6" height="8"/><rect x="612" y="450" width="6" height="8"/><rect x="700" y="360" width="6" height="8"/>
+      </g>
+    </svg>
+    <div class="hero-band">
+      <div class="hero-eyebrow">INGEDÁS — ANÁLISIS DE CLIENTE</div>
+      <h1>VEGACARNE<br>CONSUMO<br>2026</h1>
+      <div class="sub">Consume un 4,5 % más que en 2025 y paga 2.346 € más hasta agosto. Todo el golpe es de julio y agosto, y septiembre llega peor: unos 6.150 € de factura estimada.</div>
+      <div class="hero-meta">
+        <div class="d">5 de octubre de 2026 · enero–agosto 2025 vs 2026</div>
+        <div class="b">INGEDÁS · SERVICIOS INGEDÁS S.L.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="dark pad">
+  <div class="wrap">
+    <div class="toc-grid">
+      <div class="toc-box">
+        <h1 class="section" style="color:#fff; font-size:1.5rem; margin-bottom:18px;">Índice</h1>
+        <ol class="toc">
+          <li><a href="#resumen"><b>01</b><span>Resumen ejecutivo</span></a></li>
+          <li><a href="#evolucion"><b>02</b><span>Evolución mensual: el verano lo explica todo</span></a></li>
+          <li><a href="#curva"><b>03</b><span>Buena curva, mal mercado</span></a></li>
+          <li><a href="#prevision"><b>04</b><span>Qué viene: septiembre–diciembre</span></a></li>
+          <li><a href="#potencia"><b>05</b><span>Potencia a 95 kW: coste y efecto</span></a></li>
+          <li><a href="#recomendaciones"><b>06</b><span>Recomendaciones</span></a></li>
+        </ol>
+      </div>
+      <div class="toc-stat">
+        <div class="num">+2.346 €</div>
+        <div class="unit">más pagado de enero a agosto de 2026 que en el mismo periodo de 2025 (IVA incluido)</div>
+        <div class="rule2"></div>
+        <div class="delta">+8,0 % en importe con un consumo +4,5 % (143.316 → 149.772 kWh) · 29.492,23 € → 31.838,55 €</div>
+      </div>
+    </div>
+    <div class="ficha">
+      <div><span>Titular</span>VegaCarne Manuel Rodríguez, S.L.</div>
+      <div><span>CUPS</span>ES0021000016393694RG1P</div>
+      <div><span>Tarifa · potencia</span>3.0TD · 95 kW en P1–P6 desde el 15/09/2026 (antes 50 kW)</div>
+      <div><span>Suministro</span>Polígono Industrial Puente Alto, 48 · 03300 Orihuela</div>
+      <div><span>Comercializadora</span>AEQ (Wind to Market, S.A.) desde may-2024</div>
+      <div><span>Contrato vigente</span>Renovado 25/04/2026 → 25/04/2027 · sin permanencia · precio ligado al mercado</div>
+    </div>
+  </div>
+</section>
+
+<section class="light pad" id="resumen">
+  <div class="wrap">
+    <div class="kicker">VegaCarne · 5 de octubre de 2026</div>
+    <h1 class="section"><span class="no">01 —</span> Resumen ejecutivo</h1>
+    <p class="lede">
+      El año no ha sido malo de golpe: de enero a mayo VegaCarne pagó <span class="hl">1.515 € menos</span> que en 2025.
+      El problema es el verano. <span class="hl">Julio y agosto suman +3.623 €</span> y borran todo el ahorro, y la causa
+      es el precio de la energía, no el consumo. Con septiembre cerrado en 144 €/MWh, el doble que hace un año,
+      lo que viene es bastante peor.
+    </p>
+    <div class="cards">
+      <div class="card"><div class="n">+2.346 €</div><div class="l">Ene–ago 2026 vs 2025</div><div class="d">+8,0 % con IVA · consumo +4,5 %</div></div>
+      <div class="card"><div class="n">+3.623 €</div><div class="l">Solo julio y agosto</div><div class="d">de enero a mayo pagó 1.515 € menos</div></div>
+      <div class="card"><div class="n">+43 %</div><div class="l">Precio energía en agosto</div><div class="d">0,132 → 0,189 €/kWh con peajes y cargos</div></div>
+      <div class="card"><div class="n">≈ +7.500 €</div><div class="l">Septiembre–diciembre</div><div class="d">OMIP a 137 €/MWh y potencia de 95 kW · cierre ≈ 53.950 €</div></div>
+    </div>
+    <div class="bullets">
+      <div class="row"><div class="mk">—</div><div class="tx">Febrero fue el mes clave del ahorro: el mercado cerró en 19 €/MWh y la factura bajó <span class="hl">1.910 €</span> (2.498,75 € frente a 4.408,89 €). Con un mercado así de bajo, enero–mayo se salda en −1.515 €.</div></div>
+      <div class="row"><div class="mk">—</div><div class="tx">Julio de 2026 es la factura más alta desde septiembre de 2022: <span class="hl">7.326,94 €</span> (+1.727 € sobre julio de 2025). Agosto, con un 13 % más de consumo, cuesta <span class="hl">+1.895 €</span>; unos 2.750 € de la subida de julio y agosto son puro precio.</div></div>
+      <div class="row"><div class="mk">—</div><div class="tx">El OMIE medio fue de 108,8 €/MWh en julio y 122,3 en agosto, frente a 70,2 y 69,5 de 2025 (+55 % y +76 %). Septiembre ha cerrado en <span class="hl">144,4</span> y los tres primeros días de octubre ya van a 172.</div></div>
+      <div class="row"><div class="mk">—</div><div class="tx">Su curva no es el problema: dos tercios de sus kWh quedan fuera de P6 y paga la energía entre un 4 % y un 10 % <span class="hl">por debajo</span> de la media del mercado. Aun así, la factura sube.</div></div>
+      <div class="row"><div class="mk">—</div><div class="tx">El 15/09 la potencia pasó de 50 a <span class="hl">95 kW</span> en los seis periodos: añade unos 198 € al mes al término de potencia, pero elimina los excesos (2.035 € al año con impuestos en 2025). Efecto neto: ≈ +342 € al año.</div></div>
+      <div class="row"><div class="mk">—</div><div class="tx">El contrato se renovó el 25/04/2026 hasta el 25/04/2027, sin permanencia, y el precio de la energía se mueve cada mes con el mercado. Le repercute la subida entera y, al no tener permanencia, puede cambiar cuando quiera.</div></div>
+    </div>
+    <a class="backtop" href="#top">↑ volver arriba</a>
+  </div>
+</section>
+
+<section class="light pad" id="evolucion" style="background:var(--paper2);">
+  <div class="wrap">
+    <div class="kicker">Facturas enero–agosto</div>
+    <h1 class="section"><span class="no">02 —</span> Evolución mensual: el verano lo explica todo</h1>
+    <div class="chart-title">€ por factura (IVA incluido) · diferencia 2026 − 2025 encima de cada mes</div>
+    <svg viewBox="0 0 640 250" width="100%" role="img" aria-label="Importe mensual 2025 vs 2026"><line x1="44" x2="634" y1="222.0" y2="222.0" stroke="#e4dfce" stroke-width="1"/><text x="38" y="226.0" text-anchor="end" class="ax">0</text><line x1="44" x2="634" y1="170.0" y2="170.0" stroke="#e4dfce" stroke-width="1"/><text x="38" y="174.0" text-anchor="end" class="ax">2.000</text><line x1="44" x2="634" y1="118.0" y2="118.0" stroke="#e4dfce" stroke-width="1"/><text x="38" y="122.0" text-anchor="end" class="ax">4.000</text><line x1="44" x2="634" y1="66.0" y2="66.0" stroke="#e4dfce" stroke-width="1"/><text x="38" y="70.0" text-anchor="end" class="ax">6.000</text><line x1="44" x2="634" y1="14.0" y2="14.0" stroke="#e4dfce" stroke-width="1"/><text x="38" y="18.0" text-anchor="end" class="ax">8.000</text><rect x="56.9" y="103.5" width="22" height="118.5" rx="3" fill="#d6cdb0"/><rect x="82.9" y="129.6" width="22" height="92.4" rx="3" fill="#b3841c"/><text x="80.9" y="98.5" text-anchor="middle" class="dl" fill="#4d7a3a">−1.003</text><text x="80.9" y="242" text-anchor="middle" class="ax">Ene</text><rect x="130.6" y="107.4" width="22" height="114.6" rx="3" fill="#d6cdb0"/><rect x="156.6" y="157.0" width="22" height="65.0" rx="3" fill="#b3841c"/><text x="154.6" y="102.4" text-anchor="middle" class="dl" fill="#4d7a3a">−1.910</text><text x="154.6" y="242" text-anchor="middle" class="ax">Feb</text><rect x="204.4" y="138.1" width="22" height="83.9" rx="3" fill="#d6cdb0"/><rect x="230.4" y="141.7" width="22" height="80.3" rx="3" fill="#b3841c"/><text x="228.4" y="133.1" text-anchor="middle" class="dl" fill="#4d7a3a">−138</text><text x="228.4" y="242" text-anchor="middle" class="ax">Mar</text><rect x="278.1" y="164.2" width="22" height="57.8" rx="3" fill="#d6cdb0"/><rect x="304.1" y="154.7" width="22" height="67.3" rx="3" fill="#b3841c"/><text x="302.1" y="149.7" text-anchor="middle" class="dl" fill="#a8321e">+366</text><text x="302.1" y="242" text-anchor="middle" class="ax">Abr</text><rect x="351.9" y="164.0" width="22" height="58.0" rx="3" fill="#d6cdb0"/><rect x="377.9" y="133.5" width="22" height="88.5" rx="3" fill="#b3841c"/><text x="375.9" y="128.5" text-anchor="middle" class="dl" fill="#a8321e">+1.170</text><text x="375.9" y="242" text-anchor="middle" class="ax">May</text><rect x="425.6" y="117.8" width="22" height="104.2" rx="3" fill="#d6cdb0"/><rect x="451.6" y="111.6" width="22" height="110.4" rx="3" fill="#b3841c"/><text x="449.6" y="106.6" text-anchor="middle" class="dl" fill="#a8321e">+238</text><text x="449.6" y="242" text-anchor="middle" class="ax">Jun</text><rect x="499.4" y="76.4" width="22" height="145.6" rx="3" fill="#d6cdb0"/><rect x="525.4" y="31.5" width="22" height="190.5" rx="3" fill="#b3841c"/><text x="523.4" y="26.5" text-anchor="middle" class="dl" fill="#a8321e">+1.727</text><text x="523.4" y="242" text-anchor="middle" class="ax">Jul</text><rect x="573.1" y="137.8" width="22" height="84.2" rx="3" fill="#d6cdb0"/><rect x="599.1" y="88.6" width="22" height="133.4" rx="3" fill="#b3841c"/><text x="597.1" y="83.6" text-anchor="middle" class="dl" fill="#a8321e">+1.895</text><text x="597.1" y="242" text-anchor="middle" class="ax">Ago</text></svg>
+    <div class="legend"><span class="it"><span class="sw" style="background:#d6cdb0"></span>2025</span><span class="it"><span class="sw" style="background:#b3841c"></span>2026</span> · Fuente: hoja «VegaCarne V4»</div>
+    <div class="tbl"><table>
+      <thead><tr><th>Mes</th><th>kWh 2025</th><th>kWh 2026</th><th>€/kWh ener. 25</th><th>€/kWh ener. 26</th><th>Total 2025</th><th>Total 2026</th><th>Diferencia</th></tr></thead>
+      <tbody><tr><td>Ene</td><td>15.540</td><td>14.158</td><td>0,203</td><td>0,171</td><td>4.556,42 €</td><td>3.553,50 €</td><td class='dn'>−1.002,92 €</td></tr><tr><td>Feb</td><td>14.155</td><td>13.934</td><td>0,221</td><td>0,118</td><td>4.408,89 €</td><td>2.498,75 €</td><td class='dn'>−1.910,14 €</td></tr><tr><td>Mar</td><td>15.506</td><td>16.268</td><td>0,136</td><td>0,137</td><td>3.227,14 €</td><td>3.088,69 €</td><td class='dn'>−138,45 €</td></tr><tr><td>Abr</td><td>16.852</td><td>17.317</td><td>0,091</td><td>0,108</td><td>2.223,80 €</td><td>2.589,93 €</td><td class='up'>+366,13 €</td></tr><tr><td>May</td><td>18.774</td><td>20.553</td><td>0,082</td><td>0,112</td><td>2.231,76 €</td><td>3.402,19 €</td><td class='up'>+1.170,43 €</td></tr><tr><td>Jun</td><td>21.363</td><td>22.740</td><td>0,136</td><td>0,133</td><td>4.008,11 €</td><td>4.246,59 €</td><td class='up'>+238,48 €</td></tr><tr><td>Jul</td><td>23.720</td><td>25.179</td><td>0,162</td><td>0,203</td><td>5.599,53 €</td><td>7.326,94 €</td><td class='up'>+1.727,41 €</td></tr><tr><td>Ago</td><td>17.406</td><td>19.623</td><td>0,132</td><td>0,189</td><td>3.236,58 €</td><td>5.131,96 €</td><td class='up'>+1.895,38 €</td></tr><tr class='tot'><td>Ene–Ago</td><td>143.316</td><td>149.772</td><td>0,143</td><td>0,149</td><td>29.492,23 €</td><td>31.838,55 €</td><td class='up'>+2.346,32 €</td></tr></tbody>
+    </table></div>
+    <div class="note">€/kWh energía = Σ (kWh del periodo × precio del periodo) ÷ kWh totales. Abril de 2025 se ha estimado a partir del neto de la factura.</div>
+    <div class="twocol" style="margin-top:30px;">
+      <div class="col"><p><b style="font-weight:600">Enero–mayo, mejor que 2025.</b> Con un consumo un 1,7 % mayor pagó 1.515 € menos. Febrero (−1.910 €) y enero (−1.003 €) compensan de sobra los +1.170 € de mayo, que es el mes que más sube de la primavera.</p></div>
+      <div class="col"><p><b style="font-weight:600">Julio y agosto, aquí está todo.</b> El precio de la energía pasó de 0,162 a 0,203 €/kWh en julio y de 0,132 a 0,189 en agosto: un 25 % y un 43 % más. Junio, en cambio, casi no se movió (+238 €): el mercado empezó a subir de verdad en julio.</p></div>
+    </div>
+    <a class="backtop" href="#top">↑ volver arriba</a>
+  </div>
+</section>
+
+<section class="light pad" id="curva">
+  <div class="wrap">
+    <div class="kicker">Curva de consumo frente al mercado</div>
+    <h1 class="section"><span class="no">03 —</span> Buena curva, mal mercado</h1>
+    <p style="margin-top:22px; max-width:680px;">
+      VegaCarne reparte su consumo a lo largo del día y solo el 34 % de sus kWh cae en P6 (noche y fines de semana):
+      50.470 de 149.772 kWh en lo que va de año, frente al 35 % de 2025. El mercado tiene forma de "pato": la fotovoltaica
+      hunde el precio a mediodía y, cuando se pone el sol, entran el gas y los ciclos combinados y el precio se dispara.
+      La noche, que en la 3.0TD es P6, cotiza muy por encima de la media del día.
+    </p>
+    <div class="chart-title">€/MWh · OMIE, precio medio por hora · verano 2026 (datos cuartohorarios del Panel Ingedás)</div>
+    <svg viewBox="0 0 640 260" width="100%" role="img" aria-label="Precio OMIE medio por hora"><rect x="44" y="14" width="192" height="216" fill="#e7b92e" opacity=".18"/><text x="140" y="28" text-anchor="middle" class="lb">P6 · "horario barato" (0–8 h)</text><text x="356" y="224" text-anchor="middle" class="lb">Mediodía solar: lo más barato</text><line x1="44" x2="634" y1="230.0" y2="230.0" stroke="#e4dfce"/><text x="38" y="234.0" text-anchor="end" class="ax">0</text><line x1="44" x2="634" y1="186.8" y2="186.8" stroke="#e4dfce"/><text x="38" y="190.8" text-anchor="end" class="ax">50</text><line x1="44" x2="634" y1="143.6" y2="143.6" stroke="#e4dfce"/><text x="38" y="147.6" text-anchor="end" class="ax">100</text><line x1="44" x2="634" y1="100.4" y2="100.4" stroke="#e4dfce"/><text x="38" y="104.4" text-anchor="end" class="ax">150</text><line x1="44" x2="634" y1="57.2" y2="57.2" stroke="#e4dfce"/><text x="38" y="61.2" text-anchor="end" class="ax">200</text><line x1="44" x2="634" y1="14.0" y2="14.0" stroke="#e4dfce"/><text x="38" y="18.0" text-anchor="end" class="ax">250</text><text x="44" y="250" text-anchor="middle" class="ax">0h</text><text x="92" y="250" text-anchor="middle" class="ax">2h</text><text x="140" y="250" text-anchor="middle" class="ax">4h</text><text x="188" y="250" text-anchor="middle" class="ax">6h</text><text x="236" y="250" text-anchor="middle" class="ax">8h</text><text x="284" y="250" text-anchor="middle" class="ax">10h</text><text x="332" y="250" text-anchor="middle" class="ax">12h</text><text x="380" y="250" text-anchor="middle" class="ax">14h</text><text x="428" y="250" text-anchor="middle" class="ax">16h</text><text x="476" y="250" text-anchor="middle" class="ax">18h</text><text x="524" y="250" text-anchor="middle" class="ax">20h</text><text x="572" y="250" text-anchor="middle" class="ax">22h</text><polyline points="44,96.9 68,101.6 92,103.3 116,103.8 140,104.2 164,103.7 188,100.6 212,101.8 236,122.2 260,153.1 284,172.9 308,184.9 332,191.8 356,194.4 380,195.6 404,196.3 428,193.5 452,184.1 476,168.4 500,137.2 524,103.2 548,79.1 572,80.3 596,91.7" fill="none" stroke="#c9c0a2" stroke-width="2" stroke-dasharray="4 3"/><text x="599" y="95.7" class="dl" fill="#15140f">Jul</text><polyline points="44,74.3 68,80.7 92,83.2 116,87.4 140,89.4 164,88.0 188,79.6 212,73.5 236,88.8 260,134.2 284,177.0 308,193.5 332,197.9 356,204.9 380,206.4 404,211.0 428,206.9 452,187.4 476,158.9 500,105.9 524,66.4 548,50.7 572,63.7 596,73.7" fill="none" stroke="#15140f" stroke-width="2"/><text x="599" y="77.7" class="dl" fill="#15140f">Ago</text><polyline points="44,61.0 68,66.1 92,70.6 116,73.1 140,74.6 164,72.2 188,61.9 212,48.1 236,53.7 260,100.5 284,157.0 308,187.4 332,199.0 356,206.2 380,204.4 404,202.3 428,191.2 452,161.2 476,111.6 500,52.2 524,26.5 548,30.2 572,50.7 596,63.4" fill="none" stroke="#b3841c" stroke-width="2"/><text x="599" y="67.4" class="dl" fill="#15140f">Sep</text></svg>
+    <div class="legend"><span class="it"><span class="sw" style="background:#c9c0a2"></span>Julio</span><span class="it"><span class="sw" style="background:#15140f"></span>Agosto</span><span class="it"><span class="sw" style="background:#b3841c"></span>Septiembre</span><span class="it"><span class="sw" style="background:#e7b92e;opacity:.4"></span>Horas P6 entre semana</span></div>
+
+    <div class="twocol" style="margin-top:20px;">
+      <div class="col">
+        <h3>OMIE medio por bloque 3.0TD (€/MWh)</h3>
+        <div class="tbl" style="margin-top:0"><table style="min-width:0">
+          <thead><tr><th>2026</th><th>Punta</th><th>Llano</th><th>Valle P6</th><th>Media</th></tr></thead>
+          <tbody><tr><td>Junio</td><td>53,1</td><td>57,9</td><td class='up'>85,2</td><td>71,1</td></tr><tr><td>Julio</td><td>93,3</td><td>93,8</td><td class='up'>124,7</td><td>108,8</td></tr><tr><td>Agosto</td><td>105,9</td><td>97,1</td><td class='up'>139,0</td><td>122,3</td></tr><tr><td>Sept.*</td><td>128,0</td><td>110,6</td><td class='up'>169,0</td><td>144,4</td></tr></tbody></table></div>
+        <div class="note">Valle = laborables de 0 a 8 h + fines de semana completos. Punta = laborables de 9 a 14 h y de 18 a 22 h. *Hasta el día 29.</div>
+      </div>
+      <div class="col">
+        <h3>En sus facturas: el P6 es lo que más sube</h3>
+        <div class="tbl" style="margin-top:0"><table style="min-width:0">
+          <thead><tr><th>Periodo</th><th>2025</th><th>2026</th><th>Subida</th></tr></thead>
+          <tbody><tr><td>Jul · P1 punta</td><td>0,185</td><td>0,224</td><td class='up'>+21 %</td></tr><tr><td>Jul · P2 llano</td><td>0,164</td><td>0,202</td><td class='up'>+23 %</td></tr><tr><td>Jul · P6 valle</td><td>0,131</td><td>0,175</td><td class='up'>+33 %</td></tr><tr><td>Ago · P3 punta</td><td>0,139</td><td>0,187</td><td class='up'>+34 %</td></tr><tr><td>Ago · P4 llano</td><td>0,127</td><td>0,175</td><td class='up'>+38 %</td></tr><tr><td>Ago · P6 valle</td><td>0,129</td><td>0,200</td><td class='up'>+56 %</td></tr></tbody></table></div>
+        <div class="note">€/kWh facturado por periodo (energía con peajes y cargos).</div>
+      </div>
+    </div>
+    <div class="callout">Ponderando cada bloque con los kWh de su factura, en agosto VegaCarne pagó la energía a 116,8 €/MWh frente a 122,3 de media del mercado (<span class="hl">−4,5 %</span>), porque consume mucho a mediodía. Aun así, en agosto el kWh en P6 le salió a <span class="hl">0,200 €</span>, más caro que en punta (0,187 € en P3), y el 39 % de sus kWh cayeron en valle. Tener la curva repartida le ayuda, pero ya no basta para compensar el mercado.</div>
+    <a class="backtop" href="#top">↑ volver arriba</a>
+  </div>
+</section>
+
+<section class="dark pad" id="prevision">
+  <div class="wrap">
+    <div class="kicker">Escenario hasta diciembre</div>
+    <h1 class="section" style="color:#fff;"><span class="no">04 —</span> Qué viene: septiembre–diciembre</h1>
+    <p style="margin-top:8px; color:#a29f90; font-size:.86rem;">Mismo consumo que en 2025, trasladando la diferencia de precio del mercado y el cambio de potencia a 95 kW desde el 15/09. OMIE de septiembre real; octubre a diciembre con OMIP Q4-26 ≈ 137 €/MWh (a 28/09/2026).</p>
+    <div class="bigstats"><div class="row"><div class="num">≈ 6.145 €</div><div class="desc"><b style="color:#fff;font-weight:600">Septiembre</b> · 21.445 kWh · OMIE 69,5 → 144,4 €/MWh · factura de 2025: 3.730,78 € · <span style="color:var(--gold)">+2.416 €</span> (2.351 energía +64 potencia)</div></div><div class="row"><div class="num">≈ 5.655 €</div><div class="desc"><b style="color:#fff;font-weight:600">Octubre</b> · 19.067 kWh · OMIE 75,8 → ~137 €/MWh · factura de 2025: 3.777,79 € · <span style="color:var(--gold)">+1.876 €</span> (1.707 energía +169 potencia)</div></div><div class="row"><div class="num">≈ 4.855 €</div><div class="desc"><b style="color:#fff;font-weight:600">Noviembre</b> · 15.291 kWh · OMIE 59,0 → ~137 €/MWh · factura de 2025: 3.041,34 € · <span style="color:var(--gold)">+1.815 €</span> (1.744 energía +71 potencia)</div></div><div class="row"><div class="num">≈ 5.470 €</div><div class="desc"><b style="color:#fff;font-weight:600">Diciembre</b> · 16.213 kWh · OMIE 77,9 → ~137 €/MWh · factura de 2025: 4.092,78 € · <span style="color:var(--gold)">+1.377 €</span> (1.401 energía −24 potencia)</div></div><div class="row"><div class="num">≈ 53.950 €</div><div class="desc"><b style="color:#fff;font-weight:600">Cierre de 2026 frente a 2025 (+22 %)</b> · +2.346 € reales de enero a agosto y ≈ +7.484 € estimados de septiembre a diciembre (energía y cambio de potencia), sobre un año 2025 de 44.135 €.</div></div></div>
+    <div class="headlines">
+      <div class="h">El OMIE mensual no ha parado de subir desde mayo: 57 → 71 → 109 → 122 → 144 €/MWh (mayo–septiembre de 2026). En 2025, el mismo periodo estuvo plano en torno a 70.</div>
+      <div class="h">Rango de septiembre a diciembre: <b style="color:var(--gold);font-weight:600">+5.200 €</b> si el mercado se relaja a 106 €/MWh en el último trimestre, <b style="color:var(--gold);font-weight:600">+7.500 €</b> en el escenario base (137) y <b style="color:var(--gold);font-weight:600">+10.650 €</b> si se tensiona a 180.</div>
+      <div class="h">Los futuros de 2027 (≈ 86 €/MWh de media) están muy por debajo del último trimestre de 2026: el invierno debería suavizarse, pero no volver a los niveles de 2025. El riesgo va al alza por la tensión en el crudo y el gas (Ormuz) y la poca eólica.</div>
+      <div class="h">La nueva potencia pesa poco en el total: unos 703 € más de término de potencia entre septiembre y diciembre, compensados en parte por 424 € de excesos que ya no se pagan (los de 2025 en esos meses). Efecto neto de +280 €.</div>
+      <div class="h">Contrato: renovado el 25/04/2026 hasta el 25/04/2027, sin permanencia. Cada mes se factura ligado al mercado, así que la parte de energía solo se evita pasando a un precio fijo, que suele llevar permanencia.</div>
+    </div>
+    <p style="margin-top:22px; color:#a29f90; font-size:.78rem; line-height:1.6;">Método: diferencia de OMIE × 1,15 (pérdidas 3.0TD) × kWh del año anterior × impuesto eléctrico (5,11 %) × IVA (21 %). Potencia: 45 kW más sobre los peajes de la factura de diciembre de 2025 a partir del 15/09, con los excesos de 2025 eliminados. No se consideran cambios en margen ni en peajes. Es un escenario, no una previsión cerrada.</p>
+    <a class="backtop" href="#top">↑ volver arriba</a>
+  </div>
+</section>
+
+<section class="light pad" id="potencia">
+  <div class="wrap">
+    <div class="kicker">Modificación de potencia · 15 de septiembre de 2026</div>
+    <h1 class="section"><span class="no">05 —</span> Potencia a 95 kW: coste y efecto</h1>
+    <p class="lede">
+      El 15/09 la potencia contratada pasó de <span class="hl">50 a 95 kW en los seis periodos</span>. Con los peajes de su última
+      factura, el término de potencia sube de unos 176 € al mes a unos 335 € (<span class="hl">+156 € antes de impuestos</span>,
+      ≈ 198 € con IE e IVA). A cambio, desaparecen casi todos los excesos: pagó <span class="hl">1.600 € en 2025</span> y 941 € en lo que va de 2026.
+    </p>
+    <div class="chart-title">kW · máxima potencia demandada en los últimos 12 meses (a dic-25), frente a la potencia contratada antes y ahora</div>
+    <svg viewBox="0 0 640 260" width="100%" role="img" aria-label="Potencia máxima demandada por periodo"><line x1="60.0" x2="60.0" y1="16" y2="214" stroke="#e4dfce"/><text x="60.0" y="232" text-anchor="middle" class="ax">0</text><line x1="110.9" x2="110.9" y1="16" y2="214" stroke="#e4dfce"/><text x="110.9" y="232" text-anchor="middle" class="ax">10</text><line x1="161.8" x2="161.8" y1="16" y2="214" stroke="#e4dfce"/><text x="161.8" y="232" text-anchor="middle" class="ax">20</text><line x1="212.7" x2="212.7" y1="16" y2="214" stroke="#e4dfce"/><text x="212.7" y="232" text-anchor="middle" class="ax">30</text><line x1="263.6" x2="263.6" y1="16" y2="214" stroke="#e4dfce"/><text x="263.6" y="232" text-anchor="middle" class="ax">40</text><line x1="314.5" x2="314.5" y1="16" y2="214" stroke="#e4dfce"/><text x="314.5" y="232" text-anchor="middle" class="ax">50</text><line x1="365.5" x2="365.5" y1="16" y2="214" stroke="#e4dfce"/><text x="365.5" y="232" text-anchor="middle" class="ax">60</text><line x1="416.4" x2="416.4" y1="16" y2="214" stroke="#e4dfce"/><text x="416.4" y="232" text-anchor="middle" class="ax">70</text><line x1="467.3" x2="467.3" y1="16" y2="214" stroke="#e4dfce"/><text x="467.3" y="232" text-anchor="middle" class="ax">80</text><line x1="518.2" x2="518.2" y1="16" y2="214" stroke="#e4dfce"/><text x="518.2" y="232" text-anchor="middle" class="ax">90</text><line x1="569.1" x2="569.1" y1="16" y2="214" stroke="#e4dfce"/><text x="569.1" y="232" text-anchor="middle" class="ax">100</text><line x1="620.0" x2="620.0" y1="16" y2="214" stroke="#e4dfce"/><text x="620.0" y="232" text-anchor="middle" class="ax">110</text><text x="52" y="39" text-anchor="end" class="lb">P1</text><rect x="60" y="24" width="511.0" height="22" rx="3" fill="#b3841c"/><text x="563.0" y="39" text-anchor="end" class="dl" fill="#faf8f2">100,4 kW</text><text x="52" y="71" text-anchor="end" class="lb">P2</text><rect x="60" y="56" width="467.0" height="22" rx="3" fill="#b3841c"/><text x="519.0" y="71" text-anchor="end" class="dl" fill="#faf8f2">91,7 kW</text><text x="52" y="103" text-anchor="end" class="lb">P3</text><rect x="60" y="88" width="507.6" height="22" rx="3" fill="#b3841c"/><text x="559.6" y="103" text-anchor="end" class="dl" fill="#faf8f2">99,7 kW</text><text x="52" y="135" text-anchor="end" class="lb">P4</text><rect x="60" y="120" width="441.4" height="22" rx="3" fill="#b3841c"/><text x="493.4" y="135" text-anchor="end" class="dl" fill="#faf8f2">86,7 kW</text><text x="52" y="167" text-anchor="end" class="lb">P5</text><rect x="60" y="152" width="395.8" height="22" rx="3" fill="#b3841c"/><text x="447.8" y="167" text-anchor="end" class="dl" fill="#faf8f2">77,7 kW</text><text x="52" y="199" text-anchor="end" class="lb">P6</text><rect x="60" y="184" width="358.9" height="22" rx="3" fill="#b3841c"/><text x="410.9" y="199" text-anchor="end" class="dl" fill="#faf8f2">70,5 kW</text><line x1="314.5" x2="314.5" y1="12" y2="214" stroke="#a8321e" stroke-width="2" stroke-dasharray="5 4"/><text x="310.5" y="10" text-anchor="end" class="dl" fill="#a8321e">50 kW (antes)</text><line x1="543.6" x2="543.6" y1="12" y2="214" stroke="#4d7a3a" stroke-width="2" stroke-dasharray="5 4"/><text x="636" y="10" text-anchor="end" class="dl" fill="#4d7a3a">95 kW (desde 15/09)</text></svg>
+    <div class="legend"><span class="it"><span class="sw" style="background:#b3841c"></span>Máxima demandada</span><span class="it"><span class="sw" style="background:#a8321e"></span>50 kW</span><span class="it"><span class="sw" style="background:#4d7a3a"></span>95 kW</span> · Fuente: factura de diciembre de 2025</div>
+    <div class="twocol" style="margin-top:20px;">
+      <div class="col">
+        <h3>Máxima demandada frente a la potencia contratada (kW)</h3>
+        <div class="tbl" style="margin-top:0"><table style="min-width:0">
+          <thead><tr><th>Periodo</th><th>Máxima</th><th>Sobre 50 kW</th><th>Sobre 95 kW</th></tr></thead>
+          <tbody><tr><td>P1</td><td>100,4</td><td class='up'>+50,4</td><td class='up'>+5,4</td></tr><tr><td>P2</td><td>91,7</td><td class='up'>+41,7</td><td class='dn'>−3,3</td></tr><tr><td>P3</td><td>99,7</td><td class='up'>+49,7</td><td class='up'>+4,7</td></tr><tr><td>P4</td><td>86,7</td><td class='up'>+36,7</td><td class='dn'>−8,3</td></tr><tr><td>P5</td><td>77,7</td><td class='up'>+27,7</td><td class='dn'>−17,3</td></tr><tr><td>P6</td><td>70,5</td><td class='up'>+20,5</td><td class='dn'>−24,5</td></tr></tbody></table></div>
+        <div class="note">Con 50 kW superaba la potencia en los seis periodos. Con 95 kW solo P1 y P3 quedarían por encima si se repiten los picos.</div>
+      </div>
+      <div class="col">
+        <h3>Efecto en la factura, septiembre–diciembre (con IE e IVA)</h3>
+        <div class="tbl" style="margin-top:0"><table style="min-width:0" class="nw">
+          <thead><tr><th>Mes</th><th>Más potencia</th><th>Menos excesos</th><th>Neto</th></tr></thead>
+          <tbody><tr><td>Septiembre (14 d a 50 kW + 16 d a 95 kW)</td><td class='up'>+104 €</td><td class='dn'>−40 €</td><td class='up'>+64 €</td></tr><tr><td>Octubre</td><td class='up'>+202 €</td><td class='dn'>−33 €</td><td class='up'>+169 €</td></tr><tr><td>Noviembre</td><td class='up'>+195 €</td><td class='dn'>−125 €</td><td class='up'>+71 €</td></tr><tr><td>Diciembre</td><td class='up'>+202 €</td><td class='dn'>−226 €</td><td class='dn'>−24 €</td></tr><tr class='tot'><td>Sep–Dic</td><td class='up'>+703 €</td><td class='dn'>−424 €</td><td class='up'>+280 €</td></tr></tbody></table></div>
+        <div class="note">Excesos eliminados = los facturados en cada mes de 2025. Término de potencia: 0,1138 €/kW y día (suma de P1–P6, factura de diciembre de 2025).</div>
+      </div>
+    </div>
+    <div class="callout">En un año completo, pasar a 95 kW cuesta unos <span class="hl">2.377 €</span> más de potencia y evita unos <span class="hl">2.035 €</span> de excesos (los de 2025): el efecto neto es de <span class="hl">+342 €</span> al año. Compensa si los excesos que se evitan superan unos 1.869 € antes de impuestos al año, y quita el riesgo de picos como el de julio (400 € en una sola factura). Los máximos de 100,4 kW en P1 y 99,7 kW en P3 siguen por encima de 95: hay que comprobar en las facturas de octubre y noviembre que los excesos quedan en cifras residuales.</div>
+    <a class="backtop" href="#top">↑ volver arriba</a>
+  </div>
+</section>
+
+<section class="light pad" id="recomendaciones" style="background:var(--paper2); padding-bottom:0;">
+  <div class="wrap" style="padding-bottom:56px;">
+    <div class="kicker">Cierre</div>
+    <h1 class="section"><span class="no">06 —</span> Recomendaciones</h1>
+    <div class="watch-list">
+      <div class="watch-item"><div class="watch-no">1</div><div class="watch-tx"><b>Valorar un precio fijo a más de un año (con permanencia)</b>Hoy paga el precio ligado al mercado y sin permanencia. Un fijo supone que la comercializadora asume el riesgo del mercado, y por eso lo cobra: lo normal es pagar entre un <span class="hl">20 % y un 25 % más</span> en la parte de energía de mercado que el precio esperado hoy, y comprometerse al menos 12 meses. Con los futuros actuales (137 €/MWh hasta diciembre y unos 86 en 2027), seguir como ahora le costaría unos <span class="hl">49.750 € de energía en los próximos 12 meses</span> (0,176 €/kWh de media, con IE e IVA). Un fijo con esa prima saldría a <span class="hl">≈ 0,199–0,204 €/kWh</span>, unos 56.100–57.700 € (6.300–7.900 € más): por debajo del escenario tensionado (60.450 €) y por encima del relajado (42.450 €). Es un seguro, no un ahorro: compensa si prefiere un coste cerrado y blindarse frente a un invierno tensionado. Interesa más a 24 meses o más, porque reparte el precio alto de este invierno con unos 2027 más baratos; si el mercado baja, seguirá pagando el fijo.</div></div>
+      <div class="watch-item"><div class="watch-no">2</div><div class="watch-tx"><b>Mover carga al mediodía y huir de las 19–22 h</b>De 11 a 17 h el mercado cotizó en septiembre entre 28 y 50 €/MWh; de 19 a 22 h, entre 205 y 235, y de madrugada 180–210. Para una planta con frío y proceso: preenfriar cámaras al mediodía, programar limpiezas, hielo y cargas de equipos entre las 11 y las 17 h y evitar arranques en la punta de la tarde.</div></div>
+      <div class="watch-item"><div class="watch-no">3</div><div class="watch-tx"><b>Estudiar el autoconsumo fotovoltaico</b>Consume unos 219 MWh al año y una parte importante cae en horas de sol. Aunque el mercado a mediodía esté barato, cada kWh autoconsumido se ahorra también peajes, cargos, impuesto eléctrico e IVA. Proponemos un estudio de dimensionado con la curva cuartohoraria real de i-DE.</div></div>
+      <div class="watch-item"><div class="watch-no">4</div><div class="watch-tx"><b>Vigilar los excesos con la potencia de 95 kW</b>El 15/09 pasó de 50 a 95 kW en los seis periodos, lo que añade unos 200 € al mes y debería eliminar los excesos (1.600 € en 2025). Conviene comprobar en las facturas de octubre y noviembre que de verdad desaparecen: los máximos de 100,4 kW en P1 y 99,7 kW en P3 siguen por encima de 95. Con la curva cuartohoraria se pueden escalonar los arranques de compresores para recortar esos picos y no tener que subir más la potencia.</div></div>
+    </div>
+  </div>
+  <div class="backband">
+    <div class="wrap inner">
+      <div class="bg">INGEDÁS</div>
+      <div class="bt">Servicios Ingedás S.L. — Orihuela, Alicante<br>Análisis de precios y consumos de clientes</div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
